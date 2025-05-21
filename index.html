@@ -77,8 +77,9 @@
         const contenedor = document.getElementById("contenedor-tablas");
 
         hojas.forEach((hoja) => {
+          const cacheBuster = `&_=${new Date().getTime()}`; // fuerza actualización
           const query = new google.visualization.Query(
-            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(hoja.nombre)}`
+            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(hoja.nombre)}${cacheBuster}`
           );
 
           query.send((response) => {
