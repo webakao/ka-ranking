@@ -58,10 +58,9 @@
 
     <script type="text/javascript">
       google.charts.load("current", { packages: ["table"] });
-      google.charts.setOnLoadCallback(drawAllTables);
+      google.charts.setOnLoadCallback(drawTablesSequentially);
 
       const sheetId = "1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg";
-
       const hojas = [
         { nombre: "125", titulo: "Ranking General Consolidado" },
         { nombre: "SudChile", titulo: "Torneo Sudamericano Chile" },
@@ -73,44 +72,49 @@
         { nombre: "RankFakko4", titulo: "Torneo Raqueable FAKKO Nº4" },
       ];
 
-      function drawAllTables() {
+      async function drawTablesSequentially() {
         const contenedor = document.getElementById("contenedor-tablas");
 
-        hojas.forEach((hoja) => {
-          const cacheBuster = `&_=${new Date().getTime()}`; // fuerza actualización
-          const query = new google.visualization.Query(
-            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(hoja.nombre)}${cacheBuster}`
-          );
+        for (const hoja of hojas) {
+          await new Promise((resolve) => {
+            const cacheBuster = `&_=${new Date().getTime()}`;
+            const query = new google.visualization.Query(
+              `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(hoja.nombre)}${cacheBuster}`
+            );
 
-          query.send((response) => {
-            if (response.isError()) {
-              console.error("Error al cargar " + hoja.nombre + ": " + response.getMessage());
-              return;
-            }
+            query.send((response) => {
+              if (response.isError()) {
+                console.error("Error al cargar " + hoja.nombre + ": " + response.getMessage());
+                resolve();
+                return;
+              }
 
-            const data = response.getDataTable();
+              const data = response.getDataTable();
 
-            const titulo = document.createElement("h3");
-            titulo.textContent = hoja.titulo;
+              const titulo = document.createElement("h3");
+              titulo.textContent = hoja.titulo;
 
-            const tablaDiv = document.createElement("div");
-            tablaDiv.className = "tabla";
+              const tablaDiv = document.createElement("div");
+              tablaDiv.className = "tabla";
 
-            contenedor.appendChild(titulo);
-            contenedor.appendChild(tablaDiv);
+              contenedor.appendChild(titulo);
+              contenedor.appendChild(tablaDiv);
 
-            const table = new google.visualization.Table(tablaDiv);
-            table.draw(data, {
-              showRowNumber: false,
-              width: "100%",
-              height: "auto",
-              cssClassNames: {
-                tableCell: "google-visualization-table-td",
-                headerCell: "google-visualization-table-th",
-              },
+              const table = new google.visualization.Table(tablaDiv);
+              table.draw(data, {
+                showRowNumber: false,
+                width: "100%",
+                height: "auto",
+                cssClassNames: {
+                  tableCell: "google-visualization-table-td",
+                  headerCell: "google-visualization-table-th",
+                },
+              });
+
+              resolve();
             });
           });
-        });
+        }
       }
     </script>
   </body>
