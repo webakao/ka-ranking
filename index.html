@@ -11,11 +11,17 @@
         background-color: #f4f4f4;
       }
 
-      h2 {
+      h1 {
+        text-align: center;
+        color: #111;
+      }
+
+      h3 {
         margin-top: 3rem;
-        color: #222;
-        border-bottom: 2px solid #ccc;
-        padding-bottom: 0.5rem;
+        color: #333;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0.3rem;
+        font-size: 1.2rem;
       }
 
       #contenedor-tablas {
@@ -24,6 +30,26 @@
 
       .tabla {
         margin-bottom: 3rem;
+      }
+
+      /* Google Chart Table customization: override default borders */
+      .google-visualization-table-table {
+        border-collapse: collapse !important;
+        border: 1px solid #999 !important;
+        width: 100%;
+      }
+
+      .google-visualization-table-td,
+      .google-visualization-table-th {
+        border: 1px solid #999 !important;
+        padding: 6px 8px !important;
+        font-size: 0.95rem;
+      }
+
+      .google-visualization-table-th {
+        background-color: #eaeaea !important;
+        font-weight: bold;
+        color: #222;
       }
     </style>
   </head>
@@ -37,14 +63,14 @@
 
       const sheetId = "1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg";
       const hojas = [
-        { nombre: "125", titulo: " Ranking General Consolidado" },
-        { nombre: "SudChile", titulo: "Torneo Sudamericano Chile" },
-        { nombre: "NacKyudo", titulo: "Torneo Nacional Kyudokan" },
-        { nombre: "NakAKAO", titulo: "Torneo Nacional AKAO" },
-        { nombre: "RankFakko1", titulo: "Torneo Raqueable FAKKO Nº1" },
-        { nombre: "RankFakko2", titulo: "Torneo Raqueable FAKKO Nº2" },
-        { nombre: "RankFakko3", titulo: "Torneo Raqueable FAKKO Nº3" },
-        { nombre: "RankFakko4", titulo: "Torneo Raqueable FAKKO Nº4" },
+        { nombre: "125", titulo: "🏆 Ranking General Consolidado" },
+        { nombre: "SudChile", titulo: "🏅 Torneo Sudamericano Chile" },
+        { nombre: "NacKyudo", titulo: "🏅 Torneo Nacional Kyudokan" },
+        { nombre: "NakAKAO", titulo: "🏅 Torneo Nacional AKAO" },
+        { nombre: "RankFakko1", titulo: "🏅 Torneo Raqueable FAKKO Nº1" },
+        { nombre: "RankFakko2", titulo: "🏅 Torneo Raqueable FAKKO Nº2" },
+        { nombre: "RankFakko3", titulo: "🏅 Torneo Raqueable FAKKO Nº3" },
+        { nombre: "RankFakko4", titulo: "🏅 Torneo Raqueable FAKKO Nº4" },
       ];
 
       function drawAllTables() {
@@ -63,7 +89,7 @@
             const tablaDiv = document.createElement("div");
             tablaDiv.className = "tabla";
 
-            const titulo = document.createElement("h2");
+            const titulo = document.createElement("h3");
             titulo.textContent = hoja.titulo;
 
             const contenedor = document.getElementById("contenedor-tablas");
@@ -75,6 +101,10 @@
               showRowNumber: false,
               width: "100%",
               height: "auto",
+              cssClassNames: {
+                tableCell: "google-visualization-table-td",
+                headerCell: "google-visualization-table-th",
+              },
             });
           });
         });
