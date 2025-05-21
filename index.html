@@ -1,67 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ranking Torneo de Karate</title>
+  <meta charset="UTF-8">
+  <title>Ranking Karate</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      margin-bottom: 20px;
+      font-family: sans-serif;
+      padding: 2rem;
     }
     table {
-      margin: 0 auto;
       border-collapse: collapse;
-      width: 80%;
+      width: 100%;
+      margin-top: 1rem;
     }
     th, td {
-      border: 1px solid #999;
-      padding: 10px;
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: center;
     }
     th {
-      background-color: #e9ecef;
+      background-color: #eee;
     }
   </style>
 </head>
 <body>
-  <h1>Ranking Torneo de Karate</h1>
-  <div id="ranking"></div>
+  <h1>Ranking de Karate</h1>
+  <div id="tabla-ranking"></div>
 
   <script>
-    const sheetID = "1hrE2SjUW2BgDBHsd4xXNx82RfUQwJ7mvxeNGyeWKJ2c";
-    const sheetName = "Sheet1"; // Cambiá esto si la hoja tiene otro nombre
-    const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
-
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        const table = document.createElement("table");
-        const header = table.insertRow();
-        ["Puesto", "Nombre y Apellido", "Graduación", "Categoría", "Dojo"].forEach(text => {
-          const th = document.createElement("th");
-          th.textContent = text;
-          header.appendChild(th);
-        });
-
-        data.forEach(row => {
-          const tr = table.insertRow();
-          ["Puesto", "Nombre y Apellido", "Graduación", "Categoría", "Dojo"].forEach(key => {
-            const td = tr.insertCell();
-            td.textContent = row[key] || "";
-          });
-        });
-
-        document.getElementById("ranking").appendChild(table);
-      })
-      .catch(err => {
-        document.getElementById("ranking").innerHTML = "Error al cargar los datos.";
-        console.error(err);
+    function mostrarDatos(data, tabletop) {
+      let tabla = '<table><thead><tr>';
+      const columnas = Object.keys(data[0]);
+      columnas.forEach(col => {
+        tabla += `<th>${col}</th>`;
       });
+      tabla += '</tr></thead><tbody>';
+
+      data.forEach(fila => {
+        tabla += '<tr>';
+        columnas.forEach(col => {
+          tabla += `<td>${fila[col] || ''}</td>`;
+        });
+        tabla += '</tr>';
+      });
+
+      tabla += '</tbody></table>';
+      document.getElementById('tabla-ranking').innerHTML = tabla;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      Tabletop.init({
+        key: '1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg',
+        callback: mostrarDatos,
+        simpleSheet: true
+      });
+    });
   </script>
 </body>
 </html>
