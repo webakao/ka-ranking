@@ -8,45 +8,76 @@
       body {
         font-family: sans-serif;
         padding: 2rem;
+        background-color: #f4f4f4;
       }
 
-      #tabla-ranking {
-        margin-top: 1.5rem;
+      h2 {
+        margin-top: 3rem;
+        color: #222;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 0.5rem;
+      }
+
+      #contenedor-tablas {
+        margin-top: 2rem;
+      }
+
+      .tabla {
+        margin-bottom: 3rem;
       }
     </style>
-    <script type="text/javascript">
-      google.charts.load('current', { packages: ['table'] });
-      google.charts.setOnLoadCallback(drawTable);
-
-      function drawTable() {
-        const queryString = encodeURIComponent('SELECT *');
-        const sheetId = '1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg';
-        const sheetName = '125'; // Usar exactamente el nombre de la hoja
-
-        const query = new google.visualization.Query(
-          `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}&tq=${queryString}`
-        );
-
-        query.send(function (response) {
-          if (response.isError()) {
-            document.getElementById('tabla-ranking').innerHTML =
-              '<p>Error al cargar los datos.</p>';
-            console.error('Error: ' + response.getMessage());
-            return;
-          }
-
-          const data = response.getDataTable();
-          const table = new google.visualization.Table(
-            document.getElementById('tabla-ranking')
-          );
-
-          table.draw(data, { showRowNumber: false, width: '100%', height: 'auto' });
-        });
-      }
-    </script>
   </head>
   <body>
     <h1>Ranking de Karate</h1>
-    <div id="tabla-ranking">Cargando...</div>
+    <div id="contenedor-tablas"></div>
+
+    <script type="text/javascript">
+      google.charts.load("current", { packages: ["table"] });
+      google.charts.setOnLoadCallback(drawAllTables);
+
+      const sheetId = "1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg";
+      const hojas = [
+        { nombre: "SudChile", titulo: "🏅 Torneo Sudamericano Chile" },
+        { nombre: "NacKyudo", titulo: "🏅 Torneo Nacional Kyudokan" },
+        { nombre: "NakAKAO", titulo: "🏅 Torneo Nacional AKAO" },
+        { nombre: "RankFakko1", titulo: "🏅 Torneo Raqueable FAKKO Nº1" },
+        { nombre: "RankFakko2", titulo: "🏅 Torneo Raqueable FAKKO Nº2" },
+        { nombre: "RankFakko3", titulo: "🏅 Torneo Raqueable FAKKO Nº3" },
+        { nombre: "RankFakko4", titulo: "🏅 Torneo Raqueable FAKKO Nº4" },
+      ];
+
+      function drawAllTables() {
+        hojas.forEach((hoja) => {
+          const query = new google.visualization.Query(
+            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${hoja.nombre}`
+          );
+
+          query.send((response) => {
+            if (response.isError()) {
+              console.error("Error al cargar " + hoja.nombre + ": " + response.getMessage());
+              return;
+            }
+
+            const data = response.getDataTable();
+            const tablaDiv = document.createElement("div");
+            tablaDiv.className = "tabla";
+
+            const titulo = document.createElement("h2");
+            titulo.textContent = hoja.titulo;
+
+            const contenedor = document.getElementById("contenedor-tablas");
+            contenedor.appendChild(titulo);
+            contenedor.appendChild(tablaDiv);
+
+            const table = new google.visualization.Table(tablaDiv);
+            table.draw(data, {
+              showRowNumber: false,
+              width: "100%",
+              height: "auto",
+            });
+          });
+        });
+      }
+    </script>
   </body>
 </html>
