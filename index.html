@@ -32,7 +32,6 @@
         margin-bottom: 3rem;
       }
 
-      /* Google Chart Table customization: override default borders */
       .google-visualization-table-table {
         border-collapse: collapse !important;
         border: 1px solid #999 !important;
@@ -62,6 +61,7 @@
       google.charts.setOnLoadCallback(drawAllTables);
 
       const sheetId = "1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg";
+
       const hojas = [
         { nombre: "125", titulo: "Ranking General Consolidado" },
         { nombre: "SudChile", titulo: "Torneo Sudamericano Chile" },
@@ -74,6 +74,8 @@
       ];
 
       function drawAllTables() {
+        const contenedor = document.getElementById("contenedor-tablas");
+
         hojas.forEach((hoja) => {
           const query = new google.visualization.Query(
             `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(hoja.nombre)}`
@@ -86,13 +88,13 @@
             }
 
             const data = response.getDataTable();
-            const tablaDiv = document.createElement("div");
-            tablaDiv.className = "tabla";
 
             const titulo = document.createElement("h3");
             titulo.textContent = hoja.titulo;
 
-            const contenedor = document.getElementById("contenedor-tablas");
+            const tablaDiv = document.createElement("div");
+            tablaDiv.className = "tabla";
+
             contenedor.appendChild(titulo);
             contenedor.appendChild(tablaDiv);
 
