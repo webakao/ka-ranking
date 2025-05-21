@@ -1,61 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Ranking Karate</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 1rem;
-    }
-    th, td {
-      border: 1px solid #aaa;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #eee;
-    }
-  </style>
-</head>
-<body>
-  <h1>Ranking de Karate</h1>
-  <div id="tabla-ranking"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ranking de Karate</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 2rem;
+      }
 
-  <script>
-    function mostrarDatos(data, tabletop) {
-      let tabla = '<table><thead><tr>';
-      const columnas = Object.keys(data[0]);
-      columnas.forEach(col => {
-        tabla += `<th>${col}</th>`;
-      });
-      tabla += '</tr></thead><tbody>';
+      #tabla-ranking {
+        margin-top: 1.5rem;
+      }
+    </style>
+    <script type="text/javascript">
+      google.charts.load('current', { packages: ['table'] });
+      google.charts.setOnLoadCallback(drawTable);
 
-      data.forEach(fila => {
-        tabla += '<tr>';
-        columnas.forEach(col => {
-          tabla += `<td>${fila[col] || ''}</td>`;
+      function drawTable() {
+        const queryString = encodeURIComponent('SELECT *');
+        const sheetId = '1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg';
+        const sheetName = '125'; // Usar exactamente el nombre de la hoja
+
+        const query = new google.visualization.Query(
+          `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}&tq=${queryString}`
+        );
+
+        query.send(function (response) {
+          if (response.isError()) {
+            document.getElementById('tabla-ranking').innerHTML =
+              '<p>Error al cargar los datos.</p>';
+            console.error('Error: ' + response.getMessage());
+            return;
+          }
+
+          const data = response.getDataTable();
+          const table = new google.visualization.Table(
+            document.getElementById('tabla-ranking')
+          );
+
+          table.draw(data, { showRowNumber: false, width: '100%', height: 'auto' });
         });
-        tabla += '</tr>';
-      });
-
-      tabla += '</tbody></table>';
-      document.getElementById('tabla-ranking').innerHTML = tabla;
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      Tabletop.init({
-        key: '1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg',
-        callback: mostrarDatos,
-        simpleSheet: true
-      });
-    });
-  </script>
-</body>
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Ranking de Karate</h1>
+    <div id="tabla-ranking">Cargando...</div>
+  </body>
 </html>
