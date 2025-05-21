@@ -102,12 +102,13 @@
 
               const table = new google.visualization.Table(tablaDiv);
               table.draw(data, {
-                showRowNumber: false,
-                width: "100%",
-                height: "auto",
-                cssClassNames: {
-                  tableCell: "google-visualization-table-td",
-                  headerCell: "google-visualization-table-th",
+  showRowNumber: false,
+  width: "100%",
+  height: "auto",
+  sort: "disable", // ← esta línea desactiva el ordenamiento
+  cssClassNames: {
+    tableCell: "google-visualization-table-td",
+    headerCell: "google-visualization-table-th",
                 },
               });
 
