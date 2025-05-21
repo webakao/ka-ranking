@@ -37,19 +37,20 @@
 
       const sheetId = "1Uws6EozyrILb8clWBiWHUv7XQHyOWhTpmMMerqsFZJg";
       const hojas = [
-        { nombre: "SudChile", titulo: "🏅 Torneo Sudamericano Chile" },
-        { nombre: "NacKyudo", titulo: "🏅 Torneo Nacional Kyudokan" },
-        { nombre: "NakAKAO", titulo: "🏅 Torneo Nacional AKAO" },
-        { nombre: "RankFakko1", titulo: "🏅 Torneo Raqueable FAKKO Nº1" },
-        { nombre: "RankFakko2", titulo: "🏅 Torneo Raqueable FAKKO Nº2" },
-        { nombre: "RankFakko3", titulo: "🏅 Torneo Raqueable FAKKO Nº3" },
-        { nombre: "RankFakko4", titulo: "🏅 Torneo Raqueable FAKKO Nº4" },
+        { nombre: "125", titulo: " Ranking General Consolidado" },
+        { nombre: "SudChile", titulo: "Torneo Sudamericano Chile" },
+        { nombre: "NacKyudo", titulo: "Torneo Nacional Kyudokan" },
+        { nombre: "NakAKAO", titulo: "Torneo Nacional AKAO" },
+        { nombre: "RankFakko1", titulo: "Torneo Raqueable FAKKO Nº1" },
+        { nombre: "RankFakko2", titulo: "Torneo Raqueable FAKKO Nº2" },
+        { nombre: "RankFakko3", titulo: "Torneo Raqueable FAKKO Nº3" },
+        { nombre: "RankFakko4", titulo: "Torneo Raqueable FAKKO Nº4" },
       ];
 
       function drawAllTables() {
         hojas.forEach((hoja) => {
           const query = new google.visualization.Query(
-            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${hoja.nombre}`
+            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(hoja.nombre)}`
           );
 
           query.send((response) => {
